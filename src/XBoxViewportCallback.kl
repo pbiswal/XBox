@@ -10,14 +10,17 @@ object XBoxViewportCallback : SpliceStandaloneViewportCallback {
   Xfo xfo;
   Float32 walkSpeed;
   Float32 turnSpeed;
+  Boolean requiresUpdate;
 };
 
 function XBoxViewportCallback() {
-  this.init(null, Xfo());
+  this.init(XBoxController(XBOX_GAMEPAD_0), Xfo());
+  this.requiresUpdate = true;
 }
 
 function XBoxViewportCallback(XBoxController controller, Xfo xfo) {
   this.init(controller, xfo);
+  this.requiresUpdate = false;
 }
 
 function XBoxViewportCallback.init!(XBoxController controller, Xfo xfo) {
@@ -41,6 +44,9 @@ function Boolean XBoxViewportCallback.perform!(SpliceStandaloneViewportPhase pha
 
       Vec3 xAxis = this.xfo.ori.getXaxis();
       Vec3 zAxis = this.xfo.ori.getZaxis();
+
+      if(this.requiresUpdate)
+        this.controller.update();
 
       Float32 x, y, z;
       this.controller.stickNormXY(XBOX_STICK_LEFT, x, z);
