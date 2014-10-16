@@ -8,6 +8,8 @@ require Singletons;
 object XBoxViewportCallback : SpliceStandaloneViewportCallback {
   XBoxController controller;
   Xfo xfo;
+  Float32 walkSpeed;
+  Float32 turnSpeed;
 };
 
 function XBoxViewportCallback() {
@@ -21,6 +23,8 @@ function XBoxViewportCallback(XBoxController controller, Xfo xfo) {
 function XBoxViewportCallback.init!(XBoxController controller, Xfo xfo) {
   this.controller = controller;
   this.xfo = xfo;
+  this.walkSpeed = 1.0;
+  this.turnSpeed = 1.0;
 }
 
 function XBoxViewportCallback.registerForViewport!() {
@@ -35,26 +39,25 @@ function Boolean XBoxViewportCallback.perform!(SpliceStandaloneViewportPhase pha
 
     case SpliceStandaloneViewportPhase_BeforePaint: {
 
-      // /* the drawing starts with a call to ovrDevice.beginFrame */
-      // if(this.device.isStereoEnabled()) {
-      //   this.device.beginFrame(0);
+      Vec3 xAxis = this.xfo.ori.getXaxis();
+      Vec3 zAxis = this.xfo.ori.getZaxis();
 
-      //   /* start drawing onto our texture render target */
-      //   glBindFramebuffer(GL_FRAMEBUFFER, this.fbo[0]);
-      // }
+      Float32 x, y;
+      this.controller.stickNormXY(XBOX_STICK_LEFT, x, y);
+      this.xfo.tr += xAxis * x * 0.75 * this.walkSpeed;
+      this.xfo.tr -= zAxis * y * 0.75 * this.walkSpeed;
 
-      // glViewport(0, 0, this.fb_width, this.fb_height);
-      // glClearColor(this.bgColor.r, this.bgColor.g, this.bgColor.b, this.bgColor.a);
-      // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+      Quat xRot, yRot;
+      this.controller.stickNormXY(XBOX_STICK_RIGHT, x, y);
+      xRot.setFromAxisAndAngle(Vec3(1, 0, 0), -y * 0.025 * this.turnSpeed);
+      yRot.setFromAxisAndAngle(Vec3(0, 1, 0), -x * 0.025 * this.turnSpeed);
+      this.xfo.ori = xRot * this.xfo.ori;
+      this.xfo.ori = yRot * this.xfo.ori;
 
-      // viewport.camera.walkVelocitySpeed = this.walkVelocitySpeed;
-      // viewport.camera.walkVelocityBlend = this.walkVelocityBlend;
-      // viewport.camera.walkVelocityDrag = this.walkVelocityDrag;
-      // viewport.camera.turnVelocitySpeed = this.turnVelocitySpeed;
-      // viewport.camera.turnVelocityBlend = this.turnVelocityBlend;
-      // viewport.camera.turnVelocityDrag = this.turnVelocityDrag;
-      // return true;
+      Vec3 target = this.xfo.ori.rotateVector(Vec3(0, 0, 1));
+      this.xfo.ori.setFromDirectionAndUpvector(target, Vec3(0, 1, 0));
 
+      viewport.drawContext.viewport.camera.mat44 = this.xfo.toMat44();  
     }
   }
   return false;
