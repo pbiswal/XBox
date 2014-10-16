@@ -1,0 +1,69 @@
+{
+  "version": "1013001",
+  "info": {
+    "hostAppName": "Splice Standalone",
+    "hostAppVersion": "1.0"
+  },
+  "nodes": [
+    {
+      "name": "DGNode",
+      "dependencies": {},
+      "bindings": [
+        {
+          "operator": {
+            "name": "xboxOp",
+            "entry": "xboxOp",
+            "filename": "xboxOp.kl",
+            "kl": "require InlineDrawing;\nrequire XBox;\n\noperator xboxOp(io DrawingHandle handle, io XBoxController pad, io SpliceStandaloneViewportCallback callback, in Scalar time)\n{\n  if(!callback) {\n    //callback = XBoxViewportCallback(pad);\n    //callback.registerForViewport();\n  }\n  \n}\n",
+            "portmap": {}
+          }
+        }
+      ]
+    }
+  ],
+  "extensions": [
+    "XBox"
+  ],
+  "ports": [
+    {
+      "name": "handle",
+      "node": "DGNode",
+      "graph": "01_DisplayPose",
+      "type": "DrawingHandle",
+      "autoInitObjects": true,
+      "member": "handle",
+      "mode": "io",
+      "persistence": false
+    },
+    {
+      "name": "pad",
+      "node": "DGNode",
+      "graph": "01_DisplayPose",
+      "type": "XBoxController",
+      "autoInitObjects": true,
+      "member": "pad",
+      "mode": "io",
+      "persistence": false
+    },
+    {
+      "name": "callback",
+      "node": "DGNode",
+      "graph": "01_DisplayPose",
+      "type": "SpliceStandaloneViewportCallback",
+      "autoInitObjects": true,
+      "member": "callback",
+      "mode": "io",
+      "persistence": false
+    },
+    {
+      "name": "time",
+      "node": "DGNode",
+      "graph": "01_DisplayPose",
+      "type": "Scalar",
+      "autoInitObjects": true,
+      "member": "time",
+      "mode": "in",
+      "persistence": false
+    }
+  ]
+}

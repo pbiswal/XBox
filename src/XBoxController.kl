@@ -1,0 +1,274 @@
+/*
+ *  Copyright 2010-2014 Fabric Software Inc. All rights reserved.
+ */
+
+alias SInt32 XBOX_GAMEPAD_DEVICE;
+alias SInt32 XBOX_GAMEPAD_BUTTON;
+alias SInt32 XBOX_GAMEPAD_TRIGGER;
+alias SInt32 XBOX_GAMEPAD_STICK;
+alias SInt32 XBOX_GAMEPAD_STICKDIR;
+
+/// First gamepad
+const XBOX_GAMEPAD_DEVICE XBOX_GAMEPAD_0 = 0;
+/// Second gamepad
+const XBOX_GAMEPAD_DEVICE XBOX_GAMEPAD_1 = 1;
+/// Third gamepad
+const XBOX_GAMEPAD_DEVICE XBOX_GAMEPAD_2 = 2;
+/// Fourth gamepad
+const XBOX_GAMEPAD_DEVICE XBOX_GAMEPAD_3 = 3;
+/// Maximum number of supported gamepads
+const XBOX_GAMEPAD_DEVICE XBOX_GAMEPAD_COUNT = 4;
+/// UP on the direction pad
+const XBOX_GAMEPAD_BUTTON XBOX_BUTTON_DPAD_UP = 0;
+/// DOWN on the direction pad
+const XBOX_GAMEPAD_BUTTON XBOX_BUTTON_DPAD_DOWN = 1;
+/// LEFT on the direction pad
+const XBOX_GAMEPAD_BUTTON XBOX_BUTTON_DPAD_LEFT = 2;
+/// RIGHT on the direction pad
+const XBOX_GAMEPAD_BUTTON XBOX_BUTTON_DPAD_RIGHT = 3;
+/// START button
+const XBOX_GAMEPAD_BUTTON XBOX_BUTTON_START = 4;
+/// BACK button 
+const XBOX_GAMEPAD_BUTTON XBOX_BUTTON_BACK = 5;
+/// Left analog stick button
+const XBOX_GAMEPAD_BUTTON XBOX_BUTTON_LEFT_THUMB = 6;
+/// Right analog stick button
+const XBOX_GAMEPAD_BUTTON XBOX_BUTTON_RIGHT_THUMB = 7;
+/// Left bumper button
+const XBOX_GAMEPAD_BUTTON XBOX_BUTTON_LEFT_SHOULDER = 8;
+/// Right bumper button
+const XBOX_GAMEPAD_BUTTON XBOX_BUTTON_RIGHT_SHOULDER = 9;
+/// A button
+const XBOX_GAMEPAD_BUTTON XBOX_BUTTON_A = 12;
+/// B button
+const XBOX_GAMEPAD_BUTTON XBOX_BUTTON_B = 13;
+/// X button
+const XBOX_GAMEPAD_BUTTON XBOX_BUTTON_X = 14;
+/// Y button
+const XBOX_GAMEPAD_BUTTON XBOX_BUTTON_Y = 15;
+/// Maximum number of supported buttons
+const XBOX_GAMEPAD_BUTTON XBOX_BUTTON_COUNT = 16;
+/// Left trigger
+const XBOX_GAMEPAD_TRIGGER XBOX_TRIGGER_LEFT = 0;
+/// Right trigger
+const XBOX_GAMEPAD_TRIGGER XBOX_TRIGGER_RIGHT = 1;
+/// Number of triggers
+const XBOX_GAMEPAD_TRIGGER XBOX_TRIGGER_COUNT = 2 ;
+/// Left stick
+const XBOX_GAMEPAD_STICK XBOX_STICK_LEFT = 0;
+/// Right stick
+const XBOX_GAMEPAD_STICK XBOX_STICK_RIGHT = 1;
+/// Number of analog sticks
+const XBOX_GAMEPAD_STICK XBOX_STICK_COUNT = 2;
+/// CENTER, no direction
+const XBOX_GAMEPAD_STICKDIR XBOX_STICKDIR_CENTER = 0;
+/// UP direction
+const XBOX_GAMEPAD_STICKDIR XBOX_STICKDIR_UP = 1;
+/// DOWN direction
+const XBOX_GAMEPAD_STICKDIR XBOX_STICKDIR_DOWN = 2;
+/// LEFT direction
+const XBOX_GAMEPAD_STICKDIR XBOX_STICKDIR_LEFT = 3;
+/// RIGHT direction
+const XBOX_GAMEPAD_STICKDIR XBOX_STICKDIR_RIGHT = 4;
+/// Number stick directions
+const XBOX_GAMEPAD_STICKDIR XBOX_STICKDIR_COUNT = 5;
+
+object XBoxController {
+  /// internal
+  XBOX_GAMEPAD_DEVICE device;
+};
+
+/// internal
+function XBoxController.construct!(XBOX_GAMEPAD_DEVICE device) =  "XBoxController_Construct";
+
+/// standard constructor, using XBOX_GAMEPAD_0 as the device
+function XBoxController() {
+  this.construct(0);
+}
+
+/// standard constructor given a device
+function XBoxController(XBOX_GAMEPAD_DEVICE device) {
+  this.construct(device);
+}
+
+/**
+ * Updates the state of the gamepads.
+ *
+ * This must be called (at least) once per game loop.
+ */
+function XBoxController.update() = "XBoxController_Update";
+
+/**
+ * Test if a particular gamepad is connected.
+ *
+ * \param device The device to check.
+ * \returns GAMEPAD_TRUE if the device is connected, GAMEPAD_FALSE if it is not.
+ */
+function Boolean XBoxController.isConnected() = "XBoxController_IsConnected";
+
+/**
+ * Test if a particular button is being pressed.
+ *
+ * \param device The device to check.
+ * \param button The button to check.
+ * \returns GAMEPAD_TRUE if the button is down, GAMEPAD_FALSE if it is not.
+ */
+function Boolean XBoxController.buttonDown(XBOX_GAMEPAD_BUTTON button) = "XBoxController_ButtonDown";
+
+/**
+ * Test if a particular button has been depressed since the previous call to GamepadUpdate.
+ *
+ * \param device The device to check.
+ * \param button The button to check.
+ * \returns GAMEPAD_TRUE if the button has been pressed, GAMEPAD_FALSE if it is not or if it was depressed the previous frame.
+ */
+function Boolean XBoxController.buttonTriggered(XBOX_GAMEPAD_BUTTON button) = "XBoxController_ButtonTriggered";
+
+/**
+ * Test if a particular button has been released since the previous call to GamepadUpdate.
+ *
+ * \param device The device to check.
+ * \param button The button to check.
+ * \returns GAMEPAD_TRUE if the button has been released, GAMEPAD_FALSE if it is down or if it was not down the previous frame.
+ */
+function Boolean XBoxController.buttonReleased(XBOX_GAMEPAD_BUTTON button) = "XBoxController_ButtonReleased";
+
+/**
+ * Get the trigger value (depression magnitude) in its raw form.
+ *
+ * \param device The device to check.
+ * \param trigger The trigger to check.
+ * \returns Trigger depression magnitude (0 to 32767).
+ */
+function SInt32 XBoxController.triggerValue(XBOX_GAMEPAD_TRIGGER trigger) = "XBoxController_TriggerValue";
+
+/**
+ * Get the trigger value (depression magnitude) in normalized form.
+ *
+ * \param device The device to check.
+ * \param trigger The trigger to check.
+ * \returns Trigger depression magnitude (0 to 1).
+ */
+function Float32 XBoxController.triggerLength(XBOX_GAMEPAD_TRIGGER trigger) = "XBoxController_TriggerLength";
+
+/**
+ * Test if a trigger is depressed
+ *
+ * \param device The device to check.
+ * \param trigger The trigger to check.
+ * \returns GAMEPAD_TRUE if down, GAMEPAD_FALSE otherwise.
+ */
+function Boolean XBoxController.triggerDown(XBOX_GAMEPAD_TRIGGER trigger) = "XBoxController_TriggerDown";
+
+/**
+ * Test if a trigger is depressed
+ *
+ * \param device The device to check.
+ * \param trigger The trigger to check.
+ * \returns GAMEPAD_TRUE if triggered, GAMEPAD_FALSE otherwise.
+ */
+function Boolean XBoxController.triggerTriggered(XBOX_GAMEPAD_TRIGGER trigger) = "XBoxController_TriggerTriggered";
+
+/**
+ * Test if a trigger is depressed
+ *
+ * \param device The device to check.
+ * \param trigger The trigger to check.
+ * \returns GAMEPAD_TRUE if released, GAMEPAD_FALSE otherwise.
+ */
+function Boolean XBoxController.triggerReleased(XBOX_GAMEPAD_TRIGGER trigger) = "XBoxController_TriggerReleased";
+
+/**
+ * Set the rumble motors on/off.
+ *
+ * To turn off the rumble effect, set values to 0 for both motors.
+ *
+ * The left motor is the low-frequency/strong motor, and the right motor is the high-frequency/weak motor.
+ *
+ * \param device The device to update.
+ * \param left Left motor strengh (0 to 1).
+ * \param right Right motor strengh (0 to 1).
+ */
+function XBoxController.setRumble(Float32 left, Float32 right) = "XBoxController_SetRumble";
+
+/**
+ * Query the position of an analog stick as raw values.
+ *
+ * The values retrieved by this function represent the magnitude of the analog
+ * stick in each direction.  Note that it shouldn't be possible to get full
+ * magnitude in one direction unless the other direction has a magnitude of
+ * zero, as the stick has a circular movement range.
+ *
+ * \param device The device to check.
+ * \param stick The stick to check.
+ * \param outX Pointer to integer to store the X magnitude in (-32767 to 32767).
+ * \param outX Pointer to integer to store the Y magnitude in (-32767 to 32767).
+ */
+function XBoxController.stickXY(XBOX_GAMEPAD_STICK stick, io SInt32 outX, io SInt32 outY) = "XBoxController_StickXY";
+
+/**
+ * Query the position of an analog stick as normalized values.
+ *
+ * The values retrieved by this function represent the magnitude of the analog
+ * stick in each direction.  Note that it shouldn't be possible to get full
+ * magnitude in one direction unless the other direction has a magnitude of
+ * zero, as the stick has a circular movement range.
+ *
+ * \param device The device to check.
+ * \param stick The stick to check.
+ * \param outX Pointer to float to store the X magnitude in (-1 to 1).
+ * \param outX Pointer to float to store the Y magnitude in (-1 to 1).
+ */
+function XBoxController.stickNormXY(XBOX_GAMEPAD_STICK stick, io Float32 outX, io Float32 outY) = "XBoxController_StickNormXY";
+
+/**
+ * Query the magnitude of an analog stick.
+ *
+ * This returns the normalized value of the magnitude of the stick.  That is,
+ * if the stick is pushed all the way in any direction, it returns 1.0.
+ *
+ * \param device The device to check.
+ * \param stick The stick to check.
+ * \returns The magnitude of the stick (0 to 1).
+ */
+function Float32 XBoxController.stickLength(XBOX_GAMEPAD_STICK stick) = "XBoxController_StickLength";
+
+/**
+ * Query the direction of a stick (in radians).
+ *
+ * This returns the direction of the stick.  This value is in radians, not
+ * degrees.  Zero is to the right, and the angle increases in a
+ * counter-clockwise direction.
+ *
+ * \param device The device to check.
+ * \param stick The stick to check.
+ * \returns The angle of the stick (0 to 2*PI).
+ */
+function Float32 XBoxController.stickAngle(XBOX_GAMEPAD_STICK stick) = "XBoxController_StickAngle";
+
+/**
+ * Get the direction the stick is pushed in (if any).
+ *
+ * This is a useful utility function for when the stick should be treated as a simple
+ * directional pad, such as for menu UIs.
+ *
+ * \param device The device to check.
+ * \param stick The trigger to check.
+ * \returns The stick's current direction.
+ */
+function XBOX_GAMEPAD_STICKDIR XBoxController.stickDir(XBOX_GAMEPAD_STICK stick) = "XBoxController_StickDir";
+
+/**
+ * Test whether a stick has been pressed in a particular direction since the last update.
+ *
+ * This only returns true if the stick was centered last frame.
+ *
+ * This is a useful utility function for when the stick should be treated as a simple
+ * directional pad, such as for menu UIs.
+ *
+ * \param device The device to check.
+ * \param stick The trigger to check.
+ * \param stickdir The direction to check for.
+ * \returns GAMEPAD_TRUE if the stick is pressed in the specified direction, GAMEPAD_FALSE otherwise.
+ */
+function Boolean XBoxController.stickDirTriggered(XBOX_GAMEPAD_STICK stick, XBOX_GAMEPAD_STICKDIR dir) = "XBoxController_StickDirTriggered";

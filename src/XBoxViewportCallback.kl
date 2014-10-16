@@ -1,0 +1,61 @@
+/*
+ *  Copyright 2010-2014 Fabric Software Inc. All rights reserved.
+ */
+
+require SpliceStandalone:">1.0.0";
+require Singletons;
+
+object XBoxViewportCallback : SpliceStandaloneViewportCallback {
+  XBoxController controller;
+  Xfo xfo;
+};
+
+function XBoxViewportCallback() {
+  this.init(null, Xfo());
+}
+
+function XBoxViewportCallback(XBoxController controller, Xfo xfo) {
+  this.init(controller, xfo);
+}
+
+function XBoxViewportCallback.init!(XBoxController controller, Xfo xfo) {
+  this.controller = controller;
+  this.xfo = xfo;
+}
+
+function XBoxViewportCallback.registerForViewport!() {
+  SpliceStandaloneViewport viewport = Singleton_get('Viewport');
+  if(viewport) {
+    viewport.registerCallback(SpliceStandaloneViewportPhase_BeforePaint, this);
+  }
+}
+
+function Boolean XBoxViewportCallback.perform!(SpliceStandaloneViewportPhase phase, io SpliceStandaloneViewport viewport) {
+  switch(phase) {
+
+    case SpliceStandaloneViewportPhase_BeforePaint: {
+
+      // /* the drawing starts with a call to ovrDevice.beginFrame */
+      // if(this.device.isStereoEnabled()) {
+      //   this.device.beginFrame(0);
+
+      //   /* start drawing onto our texture render target */
+      //   glBindFramebuffer(GL_FRAMEBUFFER, this.fbo[0]);
+      // }
+
+      // glViewport(0, 0, this.fb_width, this.fb_height);
+      // glClearColor(this.bgColor.r, this.bgColor.g, this.bgColor.b, this.bgColor.a);
+      // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+      // viewport.camera.walkVelocitySpeed = this.walkVelocitySpeed;
+      // viewport.camera.walkVelocityBlend = this.walkVelocityBlend;
+      // viewport.camera.walkVelocityDrag = this.walkVelocityDrag;
+      // viewport.camera.turnVelocitySpeed = this.turnVelocitySpeed;
+      // viewport.camera.turnVelocityBlend = this.turnVelocityBlend;
+      // viewport.camera.turnVelocityDrag = this.turnVelocityDrag;
+      // return true;
+
+    }
+  }
+  return false;
+}

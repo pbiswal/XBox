@@ -1,0 +1,5 @@
+require XBox;
+
+operator entry() {
+  report('completed!'); 
+}
