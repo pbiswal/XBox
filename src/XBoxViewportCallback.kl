@@ -30,34 +30,28 @@ function XBoxViewportCallback.init!(XBoxController controller, Xfo xfo) {
 function XBoxViewportCallback.registerForViewport!() {
   SpliceStandaloneViewport viewport = Singleton_get('Viewport');
   if(viewport) {
-    viewport.registerCallback(SpliceStandaloneViewportPhase_BeforePaint, this);
+    viewport.registerCallback(SpliceStandaloneViewportPhase_Camera, this);
   }
 }
 
 function Boolean XBoxViewportCallback.perform!(SpliceStandaloneViewportPhase phase, io SpliceStandaloneViewport viewport) {
   switch(phase) {
 
-    case SpliceStandaloneViewportPhase_BeforePaint: {
+    case SpliceStandaloneViewportPhase_Camera: {
 
       Vec3 xAxis = this.xfo.ori.getXaxis();
       Vec3 zAxis = this.xfo.ori.getZaxis();
 
-      Float32 x, y;
-      this.controller.stickNormXY(XBOX_STICK_LEFT, x, y);
-      this.xfo.tr += xAxis * x * 0.75 * this.walkSpeed;
-      this.xfo.tr -= zAxis * y * 0.75 * this.walkSpeed;
+      Float32 x, y, z;
+      this.controller.stickNormXY(XBOX_STICK_LEFT, x, z);
+      if(this.controller.buttonDown(XBOX_BUTTON_DPAD_UP))
+        y = 1.0;
+      else if(this.controller.buttonDown(XBOX_BUTTON_DPAD_DOWN))
+        y = -1.0;
+      viewport.camera.walk(x * this.walkSpeed * 0.25, y * this.walkSpeed * 0.25, -z * this.walkSpeed * 0.25);
 
-      Quat xRot, yRot;
       this.controller.stickNormXY(XBOX_STICK_RIGHT, x, y);
-      xRot.setFromAxisAndAngle(Vec3(1, 0, 0), -y * 0.025 * this.turnSpeed);
-      yRot.setFromAxisAndAngle(Vec3(0, 1, 0), -x * 0.025 * this.turnSpeed);
-      this.xfo.ori = xRot * this.xfo.ori;
-      this.xfo.ori = yRot * this.xfo.ori;
-
-      Vec3 target = this.xfo.ori.rotateVector(Vec3(0, 0, 1));
-      this.xfo.ori.setFromDirectionAndUpvector(target, Vec3(0, 1, 0));
-
-      viewport.drawContext.viewport.camera.mat44 = this.xfo.toMat44();  
+      viewport.camera.turn(-x * this.turnSpeed * 0.0225, y * this.turnSpeed * 0.0225);
     }
   }
   return false;
