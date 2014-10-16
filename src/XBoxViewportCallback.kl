@@ -42,14 +42,12 @@ function Boolean XBoxViewportCallback.perform!(SpliceStandaloneViewportPhase pha
 
     case SpliceStandaloneViewportPhase_Camera: {
 
-      Vec3 xAxis = this.xfo.ori.getXaxis();
-      Vec3 zAxis = this.xfo.ori.getZaxis();
-
       if(this.requiresUpdate)
         this.controller.update();
 
       Float32 x, y, z;
       this.controller.stickNormXY(XBOX_STICK_LEFT, x, z);
+
       if(this.controller.buttonDown(XBOX_BUTTON_DPAD_UP))
         y = 1.0;
       else if(this.controller.buttonDown(XBOX_BUTTON_DPAD_DOWN))
