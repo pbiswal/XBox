@@ -14,7 +14,7 @@
             "name": "xboxOp",
             "entry": "xboxOp",
             "filename": "xboxOp.kl",
-            "kl": "require InlineDrawing;\nrequire XBox;\nrequire Singletons;\n\noperator xboxOp(io DrawingHandle handle, io XBoxController pad, io SpliceStandaloneViewportCallback callback, in Scalar time)\n{\n  if(!callback) {\n    Xfo xfo;\n    SpliceStandaloneViewport vp = Singleton_get('Viewport');\n    if(vp) {\n      xfo.tr = vp.camera.position;\n      xfo.ori.setFromDirectionAndUpvector(xfo.tr- vp.camera.target, Vec3(0, 1, 0));\n    }\n    \n    XBoxViewportCallback c(pad, xfo);\n    c.registerForViewport();\n    callback = c;\n  }\n  \n  pad.update();\n}\n",
+            "kl": "require InlineDrawing;\nrequire XBox;\nrequire Singletons;\n\noperator xboxOp(io DrawingHandle handle, io XBoxController pad, io ViewportCallback callback, in Scalar time)\n{\n  if(!callback) {\n    XBoxViewportCallback c(pad);\n    c.registerForViewport();\n    callback = c;\n  }\n  \n  pad.update();\n}\n",
             "portmap": {}
           }
         }
@@ -29,7 +29,7 @@
       "name": "callback",
       "node": "DGNode",
       "graph": "02_Camera",
-      "type": "SpliceStandaloneViewportCallback",
+      "type": "ViewportCallback",
       "autoInitObjects": true,
       "member": "callback",
       "mode": "io",

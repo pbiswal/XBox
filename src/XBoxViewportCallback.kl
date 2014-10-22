@@ -2,45 +2,45 @@
  *  Copyright 2010-2014 Fabric Software Inc. All rights reserved.
  */
 
-require SpliceStandalone:">1.0.0";
+require InlineDrawing:">1.0.0";
+require Manipulation;
 require Singletons;
 
-object XBoxViewportCallback : SpliceStandaloneViewportCallback {
+object XBoxViewportCallback : ViewportCallback {
   XBoxController controller;
-  Xfo xfo;
   Float32 walkSpeed;
   Float32 turnSpeed;
   Boolean requiresUpdate;
 };
 
 function XBoxViewportCallback() {
-  this.init(XBoxController(XBOX_GAMEPAD_0), Xfo());
+  this.init(XBoxController(XBOX_GAMEPAD_0));
   this.requiresUpdate = true;
 }
 
-function XBoxViewportCallback(XBoxController controller, Xfo xfo) {
-  this.init(controller, xfo);
+function XBoxViewportCallback(XBoxController controller) {
+  this.init(controller);
   this.requiresUpdate = false;
 }
 
-function XBoxViewportCallback.init!(XBoxController controller, Xfo xfo) {
+function XBoxViewportCallback.init!(XBoxController controller) {
   this.controller = controller;
-  this.xfo = xfo;
   this.walkSpeed = 1.0;
   this.turnSpeed = 1.0;
 }
 
 function XBoxViewportCallback.registerForViewport!() {
-  SpliceStandaloneViewport viewport = Singleton_get('Viewport');
+  InlineDrawing drawing = Singleton_get('InlineDrawing');
+  Viewport viewport = drawing.getViewport('default');
   if(viewport) {
-    viewport.registerCallback(SpliceStandaloneViewportPhase_Camera, this);
+    viewport.registerCallback(ViewportDrawPhase_PreDraw, this);
   }
 }
 
-function Boolean XBoxViewportCallback.perform!(SpliceStandaloneViewportPhase phase, io SpliceStandaloneViewport viewport) {
+function Boolean XBoxViewportCallback.invoke!(ViewportDrawPhase phase, io Viewport viewport, io DrawContext context) {
   switch(phase) {
 
-    case SpliceStandaloneViewportPhase_Camera: {
+    case ViewportDrawPhase_PreDraw: {
 
       if(this.requiresUpdate)
         this.controller.update();
@@ -52,10 +52,23 @@ function Boolean XBoxViewportCallback.perform!(SpliceStandaloneViewportPhase pha
         y = 1.0;
       else if(this.controller.buttonDown(XBOX_BUTTON_DPAD_DOWN))
         y = -1.0;
-      viewport.camera.walk(x * this.walkSpeed * 0.25, y * this.walkSpeed * 0.25, -z * this.walkSpeed * 0.25);
+      
+      // let the manipulator know of our camera
+      // this.manipulator.pan(Vec2(-x, y) * this.walkSpeed * 0.25);
+      // this.manipulator.dolly(z * this.walkSpeed * 0.0025);
+
+      InlineCamera camera = viewport.getCamera();
+
+      camera.goalLinearVelocity.x = x * this.walkSpeed * 0.25;
+      camera.goalLinearVelocity.y = y * this.walkSpeed * 0.25;
+      camera.goalLinearVelocity.z = -z * this.walkSpeed * 0.25;
 
       this.controller.stickNormXY(XBOX_STICK_RIGHT, x, y);
-      viewport.camera.turn(-x * this.turnSpeed * 0.0225, y * this.turnSpeed * 0.0225);
+
+      camera.goalAngularVelocity.x = -x * this.turnSpeed * 0.02;
+      camera.goalAngularVelocity.y = y * this.turnSpeed * 0.02;
+
+      camera.update();
     }
   }
   return false;
