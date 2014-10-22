@@ -29,12 +29,16 @@ function XBoxViewportCallback.init!(XBoxController controller) {
   this.turnSpeed = 1.0;
 }
 
-function XBoxViewportCallback.registerForViewport!() {
+function XBoxViewportCallback.registerForViewport!(String viewportName) {
   InlineDrawing drawing = Singleton_get('InlineDrawing');
-  Viewport viewport = drawing.getViewport('default');
+  Viewport viewport = drawing.getViewport(viewportName);
   if(viewport) {
     viewport.registerCallback(ViewportDrawPhase_PreDraw, this);
   }
+}
+
+function XBoxViewportCallback.registerForViewport!() {
+  this.registerForViewport('default');
 }
 
 function Boolean XBoxViewportCallback.invoke!(ViewportDrawPhase phase, io Viewport viewport, io DrawContext context) {
