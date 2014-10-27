@@ -20,6 +20,7 @@ supported platforms
 ===================
 
 XBox is currently only actively supported on Windows, should work on all OSes however, since the base library is cross-platform.
+For Fabric Engine 1.13.1 the extension has to be built using Visual Studio 2010 (through scons). For future versions VS 2013 might be used.
 
 building
 ========

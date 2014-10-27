@@ -46,11 +46,15 @@ cppFiles = [
   env.Dir('thirdparty').File('gamepad.c')
 ]
 
+headers = [
+  env.File('XBox.h')
+]
+
 extData = json.loads(open(sources[0].srcnode().abspath, 'r').read())
 extVersion = extData['version']
 
 extensionFiles = env.Install(STAGE_DIR, [env.File(extName+'.fpm.json')] + env.Glob('*.kl'))
-kl2edkResults = env.RunKL2EDK(cppFiles, sources)
+kl2edkResults = env.RunKL2EDK(headers, sources)
 
 extLibFileName = env.File(extName + '-' + extSuffix)
 libraryFiles = Flatten([env.SharedLibrary(extLibFileName, cppFiles)])
