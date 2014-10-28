@@ -7,7 +7,7 @@ XBox allows you to read the input information, such as sticks and buttons, from 
 extension status
 ================
 
-This extension has been built and tested against Fabric Engine 1.3.1. Higher release might work, but this hasn't been validated. Feel free to use this code for reference or training purposes, it's meant to be an example of how to integrate custom libraries into KL.
+This extension has been built and tested against Fabric Engine 1.14. Higher release might work, but this hasn't been validated. Feel free to use this code for reference or training purposes, it's meant to be an example of how to integrate custom libraries into KL.
 
 structure
 =========
